@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Laboration2
 {
@@ -6,13 +7,13 @@ namespace Laboration2
     {
         static void Main(string[] args)
         {
-
             Menu();
         }
         static void Menu()
         {
             string[] garage = new string[10];
 
+            List<string> vehicles = new List<string>(garage);
             while (true)
             {
                 Console.WriteLine("Main Menu");
@@ -55,12 +56,14 @@ namespace Laboration2
             {
                 for (int i = 0; i < garage.Length; i++)
                 {
+                    string type = "Car";
+
                     if (garage[i] == null)
                     {
-                        Console.WriteLine("Reg. number: ");
+                        Console.Write("Reg. number: ");
                         string regNr = Console.ReadLine();
-                        string type = "Car";
-                        garage[i] = type + ", " + regNr;
+                        garage[i] = type + " - " + regNr;
+                        vehicles.Add(garage[i]);
                         Console.Clear();
                         break;
                     }
@@ -73,32 +76,93 @@ namespace Laboration2
 
             void addMc()
             {
+                string type = "MC";
+
                 for (int i = 0; i < garage.Length; i++)
                 {
-                    Console.WriteLine("Reg. number: ");
-                    string regNr = Console.ReadLine();
-                    string type = "MC";
-                    garage[i] = type + ", " + regNr;
-                    break;
+                    if (garage[i] == null)
+                    {
+                        Console.Write("Reg. number: ");
+                        string regNr = Console.ReadLine();
+                        garage[i] = type + " - " + regNr;
+                        vehicles.Add(garage[i]);
+                        Console.Clear();
+                        break;
+                    }
+
+                    for (int j = i; j < garage.Length; j++)
+                    {
+                        if (garage[i] != null && garage[i] == "MC")
+                        {
+                            Console.Write("Reg. number: ");
+                            string regNr = Console.ReadLine();
+                            garage[i] = " | " + type + " - " + regNr;
+                            vehicles.Add(garage[i]);
+                            Console.Clear();
+                            break;
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                }
+            }
+            void moveVehicle()
+            {
+                throw new NotImplementedException();
+            }
+
+            void search()
+            {
+                Console.WriteLine("1 - Car");
+                Console.WriteLine("2 - Mc");
+                string search = Console.ReadLine();
+                if (search == "1")
+                {
+                    Console.Write("Reg. number: ");
+                    string searchReg = Console.ReadLine().ToLower();
+
+                    for (int i = 0; i < garage.Length; i++)
+                    {
+                        if ("Car - " + searchReg == garage[i])
+                        {
+                            Console.Write("{0} is on parkinglot number: {1}\n\n", search, i);
+                            break;
+                        }
+                        else
+                        {
+                            Console.Write("{0} doesn't exist", search);
+                            break;
+                        }
+                    }
+                }
+                else if (search == "2")
+                {
+                    Console.Write("Reg. number: ");
+                    string searchReg = Console.ReadLine().ToLower();
+
+                    for (int i = 0; i < garage.Length; i++)
+                    {
+                        if ("MC - " + searchReg == garage[i])
+                        {
+                            Console.Write("{0} is on parkinglot number: {1}\n\n", search, i);
+                            break;
+                        }
+                        else
+                        {
+                            Console.Write("{0} doesn't exist", search);
+                            break;
+                        }
+                    }
                 }
 
-            }
-
-            static void moveVehicle()
-            {
-                throw new NotImplementedException();
-            }
-
-            static void search()
-            {
-                throw new NotImplementedException();
             }
 
             static void removeVehicle()
             {
                 throw new NotImplementedException();
             }
-
         }
     }
 }
