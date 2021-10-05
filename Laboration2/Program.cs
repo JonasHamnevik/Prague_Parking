@@ -6,70 +6,99 @@ namespace Laboration2
     {
         static void Main(string[] args)
         {
-            string[] parkings = new string[10];
-
-            for (int i = 1; i < parkings.Length +1; i++)
-            {
-                Console.WriteLine("{0} ", i);
-            }
 
             Menu();
         }
         static void Menu()
         {
-            Console.WriteLine("Main Menu");
-            Console.WriteLine("1 - Add car");
-            Console.WriteLine("2 - Add MC");
-            Console.WriteLine("3 - Move vehicle");
-            Console.WriteLine("4 - Search");
-            Console.WriteLine("5 - Remove vehicle");
-            string menu = Console.ReadLine();
+            string[] garage = new string[10];
 
-            switch (menu)
+            while (true)
             {
-                case "1":
-                    addCar();
-                    break;
-                case "2":
-                    addMc();
-                    break;
-                case "3":
-                    moveVehicle();
-                    break;
-                case "4":
-                    search();
-                    break;
-                case "5":
-                    removeVehicle();
-                    break;
-                default:
-                    break;
+                Console.WriteLine("Main Menu");
+                Console.WriteLine("1 - Add car");
+                Console.WriteLine("2 - Add MC");
+                Console.WriteLine("3 - Move vehicle");
+                Console.WriteLine("4 - Search");
+                Console.WriteLine("5 - Remove vehicle");
+                string menu = Console.ReadLine();
+
+                switch (menu)
+                {
+                    case "1":
+                        addCar();
+                        break;
+                    case "2":
+                        addMc();
+                        break;
+                    case "3":
+                        moveVehicle();
+                        break;
+                    case "4":
+                        search();
+                        break;
+                    case "5":
+                        removeVehicle();
+                        break;
+                    default:
+                        break;
+                }
+
+                for (int i = 0; i < garage.Length; i++)
+                {
+                    Console.WriteLine("Parkinglot - {0} {1}", i + 1, garage[i]);
+                }
+
             }
-        }
 
-        private static void addCar()
-        {
-            throw new NotImplementedException();
-        }
+            void addCar()
+            {
+                for (int i = 0; i < garage.Length; i++)
+                {
+                    if (garage[i] == null)
+                    {
+                        Console.WriteLine("Reg. number: ");
+                        string regNr = Console.ReadLine();
+                        string type = "Car";
+                        garage[i] = type + ", " + regNr;
+                        Console.Clear();
+                        break;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+            }
 
-        private static void addMc()
-        {
-            throw new NotImplementedException();
-        }
+            void addMc()
+            {
+                for (int i = 0; i < garage.Length; i++)
+                {
+                    Console.WriteLine("Reg. number: ");
+                    string regNr = Console.ReadLine();
+                    string type = "MC";
+                    garage[i] = type + ", " + regNr;
+                    break;
+                }
 
-        private static void moveVehicle()
-        {
-            throw new NotImplementedException();
-        }
+            }
 
-        private static void search()
-        {
-            throw new NotImplementedException();
-        }
+            static void moveVehicle()
+            {
+                throw new NotImplementedException();
+            }
 
-        private static void removeVehicle()
-        {
-            throw new NotImplementedException();
+            static void search()
+            {
+                throw new NotImplementedException();
+            }
+
+            static void removeVehicle()
+            {
+                throw new NotImplementedException();
+            }
+
         }
     }
 }
