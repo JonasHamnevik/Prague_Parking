@@ -5,10 +5,11 @@ namespace Laboration2
 {
     class Program
     {
-        static string[] garage = new string[11]; //Ska börja på 1 och sluta på 10 när det hanteras och när det skrivs ut.
+        static string[] garage = new string[101]; //Ska börja på 1 och sluta på 100 när det hanteras och när det skrivs ut.
         static int vehicleCount = 0;
         static char type;
         static string regNr;
+        const int maxReg = 10; //Max antal symboler i regnumret
 
         static void Initialize()
         {
@@ -114,10 +115,19 @@ namespace Laboration2
                 {
                     Console.Write("Reg. number: ");
                     regNr = Console.ReadLine();
-                    garage[i] = type + "+" + regNr;
-                    vehicleCount++;
-                    Console.Clear();
-                    break;
+
+                    if (regNr.Length > maxReg)
+                    {
+                        Console.WriteLine("The reg. number is to long.");
+                        break;
+                    }
+                    else
+                    {
+                        garage[i] = type + "+" + regNr;
+                        vehicleCount++;
+                        Console.Clear();
+                        break;
+                    }
                 }
                 else
                 {
@@ -135,9 +145,18 @@ namespace Laboration2
                 {
                     Console.Write("Reg. number: ");
                     regNr = Console.ReadLine();
-                    garage[i] = type + "+" + regNr;
-                    Console.Clear();
-                    break;
+
+                    if (regNr.Length > maxReg)
+                    {
+                        Console.WriteLine("The reg. number is to long.");
+                        break;
+                    }
+                    else
+                    {
+                        garage[i] = type + "+" + regNr;
+                        Console.Clear();
+                        break;
+                    }
                 }
                 else if (garage[i].Contains('|'))
                 {
@@ -192,7 +211,6 @@ namespace Laboration2
                                 garage[choice] = garage[choice] + "|" + mc;
                                 mcs[i] = "";
                             }
-                            
                         }
                     }
                     pSpot = mcs[0] + mcs[1];
@@ -274,7 +292,5 @@ namespace Laboration2
                 }
             }
         }
-
-
     }
 }
