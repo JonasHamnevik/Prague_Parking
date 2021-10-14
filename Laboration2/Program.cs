@@ -5,25 +5,33 @@ namespace Laboration2
 {
     class Program
     {
+        static string[] garage = new string[11]; //Ska börja på 1 och sluta på 10 när det hanteras och när det skrivs ut.
+        static int vehicleCount = 0;
+        static char type;
+        static string regNr;
+
+        static void Initialize()
+        {
+            for (int i = 1; i < garage.Length; i++)
+            {
+                garage[i] = "";
+            }
+        }
         static void Main(string[] args)
         {
-            string[] garage = new string[11]; //Ska börja på 1 och sluta på 10 när det hanteras och när det skrivs ut.
-            int carCount = 0;
-            int mcCount = 0;
-
-            string type;
-            string regNr;
+            Initialize();
+            int parkingSpot;
+            string searchReg;
             bool exit = false;
             while (exit != true)
             {
-                int vehicleCount = carCount + mcCount;
 
                 Console.WriteLine("Main Menu");
                 Console.WriteLine("1 - Add Car");
                 Console.WriteLine("2 - Add MC");
                 Console.WriteLine("3 - Show garage");
-                Console.WriteLine("4 - Move vehicle");
-                Console.WriteLine("5 - Search");
+                Console.WriteLine("4 - Search");
+                Console.WriteLine("5 - Move vehicle");
                 Console.WriteLine("6 - Remove vehicle");
                 Console.WriteLine("0 - Exit");
                 string menu = Console.ReadLine();
@@ -31,24 +39,24 @@ namespace Laboration2
                 switch (menu)
                 {
                     case "1": //Lägga till bil
-                        if (vehicleCount == garage.Length)
+                        if (vehicleCount == garage.Length - 1)
                         {
                             Console.WriteLine("Garage is full!");
                         }
                         else
                         {
-                            addCar();
+                            AddCar();
                         }
                         break;
 
                     case "2": //Lägga till MC
-                        if (vehicleCount == garage.Length)
+                        if (vehicleCount == garage.Length - 1)
                         {
                             Console.WriteLine("Garage is full!");
                         }
                         else
                         {
-                            addMc();
+                            AddMc();
                         }
                         break;
 
@@ -58,36 +66,32 @@ namespace Laboration2
                         {
                             Console.WriteLine("Parkingspot - {0} {1}", i, garage[i]);
                         }
-                        Console.WriteLine("\nAmount of cars: {0}", carCount);
-                        Console.WriteLine("\nAmount of MC: {0}", mcCount);
-                        Console.WriteLine("\nThe garage has {0} free spots of {1} spots\n", (garage.Length -1) - vehicleCount, garage.Length -1);
                         break;
 
-                    case "4": //flytta fordon
-                        moveVehicle();
-                        break;
-
-                    case "5": //Söka efter fordon
+                    case "4": //Söka efter fordon
                         Console.Clear();
                         Console.WriteLine("Enter Reg. number: ");
-                        string searchReg = Console.ReadLine();
-
-                        for (int i = 1; i < garage.Length; i++)
+                        searchReg = Console.ReadLine();
+                        if (Search(searchReg, out parkingSpot))
                         {
-                            if (garage[i] == null)
-                            {
-                                break;
-                            }
-                            else if (garage[i].Contains(searchReg)) //Blir fel när jag söker efter att jag har flyttat ett fordon
-                            {
-                                Console.WriteLine("\n\n{0} is on parkingspot: {1}\n", garage[i], i);
-                                break;
-                            }
+                            Console.WriteLine("\n\n{0} is on parkingspot: {1}\n", garage[parkingSpot], parkingSpot);
+                        }
+                        else
+                        {
+                            Console.WriteLine("{0} is not in the garage", searchReg);
                         }
                         break;
 
+                    case "5": //flytta fordon
+                        Console.WriteLine("Enter Reg. number: ");
+                        searchReg = Console.ReadLine();
+                        MoveVehicle(searchReg);
+                        break;
+
                     case "6": //Ta bort fordon
-                        removeVehicle();
+                        Console.WriteLine("Enter Reg. number: ");
+                        searchReg = Console.ReadLine();
+                        RemoveVehicle(searchReg);
                         break;
 
                     case "0":
@@ -98,154 +102,179 @@ namespace Laboration2
                         Console.WriteLine("Enter a command!");
                         break;
                 }
-
             }
-
-            void addCar()
+        }
+        public static void AddCar()
+        {
+            for (int i = 1; i < garage.Length; i++)
             {
-                for (int i = 1; i < garage.Length; i++)
-                {
-                    type = "CAR";
+                type = 'C';
 
-                    if (garage[i] == null)
-                    {
-                        Console.Write("Reg. number: ");
-                        regNr = Console.ReadLine();
-                        garage[i] = type + "+" + regNr;
-                        carCount++;
-                        Console.Clear();
-                        break;
-                    }
-                    else
-                    {
-                        continue;
-                    }
+                if (garage[i] == "")
+                {
+                    Console.Write("Reg. number: ");
+                    regNr = Console.ReadLine();
+                    garage[i] = type + "+" + regNr;
+                    vehicleCount++;
+                    Console.Clear();
+                    break;
                 }
-            }
-
-            void addMc()
-            {
-                for (int i = 1; i < garage.Length; i++)
+                else
                 {
-                    type = "MC";
-
-                    if (garage[i] == null)
-                    {
-                        Console.Write("Reg. number: ");
-                        regNr = Console.ReadLine();
-                        garage[i] = type + "+" + regNr;
-                        Console.Clear();
-                        break;
-                    }
-                    else if (garage[i].Contains('|'))
-                    {
-                        continue;
-                    }
-                    else if (garage[i].Contains("MC"))
-                    {
-                        Console.Write("Reg. number: ");
-                        regNr = Console.ReadLine();
-                        garage[i] = garage[i] + "|" + type + "+" + regNr;
-                        mcCount++;
-                        Console.Clear();
-                        break;
-                    }
-                }
-            }
-
-            void moveVehicle()
-            {
-                Console.Clear();
-                Console.WriteLine("Enter Reg. number: ");
-                string searchReg = Console.ReadLine();
-
-                for (int i = 1; i < garage.Length; i++)
-                {
-                    //if (garage[i].Contains(searchReg) && garage[i].Contains('|')) //Om det är två motorcyklar
-                    //{
-                    //    //string.Split(garage[i], '|') //Har inte fått det att funka än
-
-                    //    string tmp = garage[i];
-                    //    Console.WriteLine("{0} is on parkingspot: {1}", tmp, i);
-                    //    garage[i] = "";
-                    //    Console.WriteLine("These spots are available:");
-                    //    for (i = 1; i < garage.Length; i++)
-                    //    {
-                    //        if (garage[i] == null)
-                    //        {
-                    //            Console.WriteLine("{0}, \n", i);
-                    //        }
-                    //    }
-                    //    Console.WriteLine("Where do you want to move?");
-                    //    int choice = int.Parse(Console.ReadLine());
-                    //    for (i = 0; i < garage.Length; i++)
-                    //    {
-                    //        if (garage[choice] == null)
-                    //        {
-                    //            garage[choice] = tmp;
-                    //            break;
-                    //        }
-                    //    }
-                    //    break;
-                    //}
-                    /*else*/ if (garage[i].Contains(searchReg)) //Om det bara är ett regnummer på platsen
-                    {
-                        string tmp = garage[i];
-                        Console.WriteLine("{0} is on parkingspot: {1}", tmp, i);
-                        garage[i] = "";
-                        Console.WriteLine("These spots are available:");
-                        for (i = 1; i < garage.Length; i++)
-                        {
-                            if (garage[i] == null)
-                            {
-                                Console.Write("{0}, ", i);
-                            }
-                        }
-                        Console.WriteLine("\nWhere do you want to move?");
-                        int choice = int.Parse(Console.ReadLine());
-                        for (i = 0; i < garage.Length; i++)
-                        {
-                            if (garage[choice] == null)
-                            {
-                                garage[choice] = tmp;
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                }
-
-            }
-
-            void removeVehicle()
-            {
-                Console.Clear();
-                Console.WriteLine("Enter Reg. number: ");
-                string searchReg = Console.ReadLine();
-
-                for (int i = 1; i < garage.Length; i++)
-                {
-                    if (garage[i].Contains(searchReg))
-                    {
-                        Console.WriteLine("\n\nWould you like to remove {0} Y/N?", garage[i]);
-                        string choice = Console.ReadLine().ToUpper();
-                        if (choice == "Y")
-                        {
-                            garage[i] = "";
-                            break;
-                        }
-                        else if (choice == "N")
-                        {
-                            Console.Clear();
-                        }
-                        break;
-                    }
-                    else
-                    {
-                        Console.WriteLine("{0} doesn't exist", searchReg);
-                    }
+                    continue;
                 }
             }
         }
+        public static void AddMc()
+        {
+            for (int i = 1; i < garage.Length; i++)
+            {
+                type = 'M';
+
+                if (garage[i] == "")
+                {
+                    Console.Write("Reg. number: ");
+                    regNr = Console.ReadLine();
+                    garage[i] = type + "+" + regNr;
+                    Console.Clear();
+                    break;
+                }
+                else if (garage[i].Contains('|'))
+                {
+                    continue;
+                }
+                else if (garage[i].Contains("M+"))
+                {
+                    Console.Write("Reg. number: ");
+                    regNr = Console.ReadLine();
+                    garage[i] = garage[i] + "|" + type + "+" + regNr;
+                    vehicleCount++;
+                    Console.Clear();
+                    break;
+                }
+            }
+        }
+        public static void MoveVehicle(string searchReg)
+        {
+            Console.Clear();
+            int spotNumber;
+            Console.WriteLine("These spots are available:");
+            for (int i = 1; i < garage.Length; i++)
+            {
+                if (garage[i] == "" || garage[i].StartsWith("M"))
+                {
+                    Console.Write("{0}, ", i);
+                }
+            }
+
+            if (Search(searchReg, out spotNumber))
+            {
+                Console.WriteLine("\n\n{0} is on parkingspot: {1}\n", searchReg, spotNumber);
+
+                Console.WriteLine("\nWhere do you want to move?");
+                int choice = int.Parse(Console.ReadLine());
+                if (garage[spotNumber].Contains("|") && garage[spotNumber].StartsWith("M+"))
+                {
+                    string mc = "M+" + searchReg;
+                    string pSpot = garage[spotNumber];
+                    string[] mcs = pSpot.Split('|');
+                    for (int i = 0; i < mcs.Length; i++)
+                    {
+                        if (mcs[i] == mc)
+                        {
+                            if (garage[choice] == "")
+                            {
+                                garage[choice] = mc;
+                                mcs[i] = "";
+                            }
+                            else if (garage[choice].StartsWith("M+"))
+                            {
+                                garage[choice] = garage[choice] + "|" + mc;
+                                mcs[i] = "";
+                            }
+                            
+                        }
+                    }
+                    pSpot = mcs[0] + mcs[1];
+                    garage[spotNumber] = pSpot;
+                }
+
+                else if (garage[choice] == "")
+                {
+                    for (int i = 1; i < garage.Length; i++)
+                    {
+                        garage[choice] = garage[spotNumber];
+                        garage[spotNumber] = "";
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("The spot is not available");
+                    return;
+                }
+            }
+        }
+
+        public static bool Search(string searchReg, out int spotNumber)
+        {
+            for (int i = 1; i < garage.Length; i++)
+            {
+                if (garage[i].Contains(searchReg))
+                {
+                    spotNumber = i;
+                    return true;
+                }
+            }
+            spotNumber = -1;
+            return false;
+        }
+
+        public static void RemoveVehicle(string searchReg)
+        {
+            Console.Clear();
+            int spotNumber;
+            if (Search(searchReg, out spotNumber))
+            {
+                Console.WriteLine("{0} is on parkingspot {1}\n", searchReg, spotNumber);
+                Console.WriteLine("Do you want to remove {0} Y/N", searchReg);
+                string choice = Console.ReadLine().ToUpper();
+
+                if (choice == "Y")
+                {
+                    if (garage[spotNumber].StartsWith("C+"))
+                    {
+                        garage[spotNumber] = "";
+                    }
+                    else if (garage[spotNumber].StartsWith("M+"))
+                    {
+                        if (garage[spotNumber].Contains("|"))
+                        {
+                            string mc = "M+" + searchReg;
+                            string pSpot = garage[spotNumber];
+                            string[] mcs = pSpot.Split('|');
+                            for (int i = 0; i < mcs.Length; i++)
+                            {
+                                if (mcs[i] == mc)
+                                {
+                                    mcs[i] = "";
+                                }
+                            }
+                            pSpot = mcs[0] + mcs[1];
+                            garage[spotNumber] = pSpot;
+                        }
+                        else
+                        {
+                            garage[spotNumber] = "";
+                        }
+                    }
+                }
+                else if (choice == "N")
+                {
+                    return;
+                }
+            }
+        }
+
+
     }
 }
